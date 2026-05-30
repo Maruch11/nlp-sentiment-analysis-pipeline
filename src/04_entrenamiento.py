@@ -9,13 +9,22 @@ import joblib
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 MODELS_DIR = BASE_DIR / "models"
-MODELS_DIR.mkdir(exist_ok=True)
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Cargar df 
 df = pd.read_csv(DATA_DIR / "dataset_preprocesado.csv")
 
+if df.empty:
+    raise ValueError("Dataset vacío")
+
+# Validar columnas requeridas
+columnas = ["texto", "sentimiento"]
+
+if not all(c in df.columns for c in columnas):
+    raise ValueError("Faltan columnas requeridas")
+
 # train_test_split con stratify
-X_train,X_test,y_train,y_test = train_test_split(
+X_train_texto, X_test_texto, y_train, y_test = train_test_split(
     df["texto"],
     df["sentimiento"],
     test_size=0.2,
@@ -25,8 +34,8 @@ X_train,X_test,y_train,y_test = train_test_split(
 
 # Guardar datos del test
 df_test = pd.DataFrame({
-    "texto": X_test.values,
-    "sentimiento": y_test.values
+    "texto": X_test_texto,
+    "sentimiento": y_test
 })
 
 df_test.to_csv(DATA_DIR / "dataset_test.csv", index=False)
@@ -34,12 +43,12 @@ df_test.to_csv(DATA_DIR / "dataset_test.csv", index=False)
 # Vectorizacion
 vectorizer = TfidfVectorizer()
 
-X_train = vectorizer.fit_transform(X_train)
+X_train = vectorizer.fit_transform(X_train_texto)
 
 # Modelo con balanceo de clases
 modelo = LogisticRegression(class_weight="balanced", max_iter=1000)
 
-modelo.fit(X_train,y_train)
+modelo.fit(X_train, y_train)
 
 # Guardar modelo y vectorizador
 joblib.dump(modelo, MODELS_DIR / "modelo_sentimiento.pkl")
@@ -55,10 +64,10 @@ print(df["sentimiento"].value_counts())
 
 # Tamaño de train y test
 print("\nTamaño de entrenamiento:")
-print(len(X_train))
+print(len(X_train_texto))
 
 print("\nTamaño de test:")
-print(len(X_test))
+print(len(X_test_texto))
 
 # Distribución de clases en train y test
 print("\nDistribución en entrenamiento:")
