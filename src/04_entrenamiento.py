@@ -12,16 +12,7 @@ MODELS_DIR = BASE_DIR / "models"
 MODELS_DIR.mkdir(exist_ok=True)
 
 # Cargar df 
-df = pd.read_csv(DATA_DIR / "dataset_etiquetado.csv")
-
-# Normalizacion y tratamiento de espacios y textos vacios 
-df["texto"] = df["texto"].fillna("")
-df["texto"] = df["texto"].str.lower()
-
-df["sentimiento"] = df["sentimiento"].str.strip().str.lower()
-
-# Eliminacion de filas sin etiqueta
-df = df.dropna(subset=["sentimiento"])
+df = pd.read_csv(DATA_DIR / "dataset_preprocesado.csv")
 
 # train_test_split con stratify
 X_train,X_test,y_train,y_test = train_test_split(
@@ -54,3 +45,34 @@ modelo.fit(X_train,y_train)
 joblib.dump(modelo, MODELS_DIR / "modelo_sentimiento.pkl")
 joblib.dump(vectorizer, MODELS_DIR / "vectorizer.pkl")
 
+# Confirmación de carga del dataset
+print("Dataset cargado:")
+print(df.shape)
+
+# Distribución de clases antes del split
+print("\nDistribución de clases:")
+print(df["sentimiento"].value_counts())
+
+# Tamaño de train y test
+print("\nTamaño de entrenamiento:")
+print(len(X_train))
+
+print("\nTamaño de test:")
+print(len(X_test))
+
+# Distribución de clases en train y test
+print("\nDistribución en entrenamiento:")
+print(y_train.value_counts())
+
+print("\nDistribución en test:")
+print(y_test.value_counts())
+
+# Confirmación de guardado
+print("\nModelo guardado en:")
+print(MODELS_DIR / "modelo_sentimiento.pkl")
+
+print("\nVectorizador guardado en:")
+print(MODELS_DIR / "vectorizer.pkl")
+
+print("\nDataset de test guardado en:")
+print(DATA_DIR / "dataset_test.csv")
