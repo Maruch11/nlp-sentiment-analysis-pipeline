@@ -1,6 +1,7 @@
 # Sentiment Project
 
-Pipeline de NLP para análisis de sentimiento.
+Pipeline de NLP para análisis de sentimiento con entrenamiento de un modelo
+propio y comparación experimental contra modelo preentrenado de Hugging Face.
 
 ## Requisitos
 
@@ -14,12 +15,18 @@ nlp-sentiment-analysis-pipeline/
 ├── data/
 │   ├── dataset_original.csv
 │   ├── dataset_etiquetado.csv
-|   ├── dataset_prerocesado.csv
+|   ├── dataset_preprocesado.csv
 │   ├── dataset_test.csv
+|   └── dataset_inferido_hf.csv
+|
+├── graficos/
+|   ├── distribucion_predicciones.py
+|   ├── distribucion_predicciones.png
 |
 ├── models/
-│   ├── modelo_sentimiento.pkl
-│   ├── vectorizer.pkl
+|   ├── huggingface/            # cache local de modelos HF (ignorado por git)
+│   ├── modelo_sentimiento.pkl  # modelo generado localmente (ignorado por git)
+│   ├── vectorizer.pkl          # vectorizador generado localmente (ignorado por git)
 |
 ├── src/
 │   ├── 01_exploracion.py
@@ -27,7 +34,9 @@ nlp-sentiment-analysis-pipeline/
 │   ├── 03_preprocesamiento.py
 │   ├── 04_entrenamiento.py
 │   ├── 05_evaluacion.py
-│   └── 06_inferencia.py
+│   ├── 06_inferencia.py
+|   ├── 07_inferencia_hf_inicial.py
+|   └── 08_inferencia_hf.py
 │
 ├── requirements.txt
 │
@@ -36,7 +45,7 @@ nlp-sentiment-analysis-pipeline/
 
 ## Este proyecto contiene un `Pipeline` mínimo de `NLP`
 ```
-Explorar → Etiquetar → Preprocesar → Entrenar → Evaluar → Inferir
+Explorar → Etiquetar → Preprocesar → Entrenar → Evaluar → Inferir → Comparar modelos
 ```
 ### Flujo de datos
 ```
@@ -55,7 +64,11 @@ dataset_test.csv
         ↓
 modelo_sentimiento.pkl + vectorizer.pkl
         ↓
-inferencia sobre dataset_original.csv
+inferencia modelo propio sobre dataset_original.csv
+        ↓
+inferencia HF sobre dataset_original.csv
+        ↓
+comparación de resultados
 ```
 ## 01_exploracion.py
 
@@ -195,6 +208,23 @@ Responsable de aplicar el modelo entrenado sobre datos no vistos.
 - pathlib.Path
 - joblib
 
+## 07_inferencia_hf_inicial.py
+
+Script exploratorio utilizado para validar la ejecución de inferencia
+utilizando un modelo preentrenado de Hugging Face.
+
+## 08_inferencia_hf.py
+
+Responsable de aplicar un modelo preentrenado de Hugging Face sobre el
+dataset original para comparar resultados contra el modelo propio.
+
+### Funcionalidad:
+
+- carga dataset_original.csv
+- ejecuta inferencia usando modelo HF
+- genera predicciones
+- permite comparar distribuciones y comportamiento observado
+
 ## Criterios prácticos de reejecución de módulos
 
 | Artefacto | Origen | Acción |
@@ -203,11 +233,13 @@ Responsable de aplicar el modelo entrenado sobre datos no vistos.
 | `dataset_etiquetado.csv` | Resultado del etiquetado manual | No sobrescribir |
 | `dataset_preprocesado.csv` | Resultado del preprocesamiento | No sobrescribir salvo decisión explícita |
 | `dataset_test.csv` | Resultado del entrenamiento | Sobrescribir en cada entrenamiento |
+| `dataset_inferido_hf.csv` | Resultado reproducible de inferencia HF | Regenerar cuando corresponda |
 | `modelo_sentimiento.pkl` | Modelo entrenado | Sobrescribir en cada entrenamiento |
 | `vectorizer.pkl` | Vectorizador entrenado | Sobrescribir en cada entrenamiento |
+| Gráficos generados | Resultado de evaluación / análisis | Regenerar cuando corresponda |
 
 ### Regla general
 
 - Artefactos manuales → preservar
-- Artefactos intermedios reproducibles → regenerar cuando corresponda
-- Modelo y artefactos de entrenamiento → reemplazar en cada nuevo entrenamiento
+- Artefactos reproducibles → regenerar cuando corresponda
+- Modelos y artefactos de entrenamiento → reemplazar en cada nuevo entrenamiento
