@@ -20,9 +20,9 @@ models/huggingface/
 # Datos generados
 data/dataset_test.csv
 data/dataset_preprocesado.csv
+data/dataset_inferido_hf.csv
 
 # SO
 .DS_Store
 Thumbs.db
 
-graficos/
