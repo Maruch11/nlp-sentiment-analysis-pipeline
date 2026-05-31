@@ -21,4 +21,12 @@ pred = modelo.predict(X)
 
 nuevos["prediccion"] = pred
 
-print(nuevos[["texto", "prediccion"]].head())
+print("Cantidad de predicciones:", len(pred))
+print("\nCantidad por etiqueta:")
+print(nuevos["prediccion"].value_counts())
+
+print(nuevos[nuevos["prediccion"]=="positivo"][["texto", "prediccion"]].head())
+
+print(nuevos[nuevos["prediccion"]=="neutro"][["texto", "prediccion"]].head())
+
+print(nuevos[nuevos["prediccion"]=="negativo"][["texto", "prediccion"]].head())

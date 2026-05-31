@@ -15,6 +15,7 @@ venv/
 
 # Modelos generados
 models/*.pkl
+models/huggingface/
 
 # Datos generados
 data/dataset_test.csv
@@ -23,3 +24,5 @@ data/dataset_preprocesado.csv
 # SO
 .DS_Store
 Thumbs.db
+
+graficos/
