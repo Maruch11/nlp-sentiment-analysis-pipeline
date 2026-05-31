@@ -216,14 +216,23 @@ utilizando un modelo preentrenado de Hugging Face.
 ## 08_inferencia_hf.py
 
 Responsable de aplicar un modelo preentrenado de Hugging Face sobre el
-dataset original para comparar resultados contra el modelo propio.
+dataset original para obtener predicciones y contrastar resultados con el modelo propio.
 
 ### Funcionalidad:
 
-- carga dataset_original.csv
-- ejecuta inferencia usando modelo HF
-- genera predicciones
-- permite comparar distribuciones y comportamiento observado
+- carga `dataset_original.csv`
+- carga de modelo preentrenado
+- ejecuta inferencia utilizando mediante pipeline de transformers
+- aplicación de inferencia sobre registros del dataset
+- exportación de resultados 
+- conteo y visualización básica de resultados
+
+### Librerías principales
+
+- pandas
+- pathlib.Path
+- transformers
+- torch
 
 ## Criterios prácticos de reejecución de módulos
 
